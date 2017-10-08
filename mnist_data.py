@@ -33,9 +33,10 @@ def extract_images(filename):
     num_images = _read32(bytestream)
     rows = _read32(bytestream)
     cols = _read32(bytestream)
-    buf = bytestream.read(rows * cols * num_images)
+    count = rows * cols * num_images
+    buf = bytestream.read(count[0])
     data = np.frombuffer(buf, dtype=np.uint8)
-    data = data.reshape(num_images, rows, cols, 1)
+    data = data.reshape(num_images[0], rows[0], cols[0], 1)
     return data
 def dense_to_one_hot(labels_dense, num_classes=10):
   """Convert class labels from scalars to one-hot vectors."""
@@ -54,7 +55,7 @@ def extract_labels(filename, one_hot=False):
           'Invalid magic number %d in MNIST label file: %s' %
           (magic, filename))
     num_items = _read32(bytestream)
-    buf = bytestream.read(num_items)
+    buf = bytestream.read(num_items[0])
     labels = np.frombuffer(buf, dtype=np.uint8)
     if one_hot:
       return dense_to_one_hot(labels)
@@ -125,7 +126,7 @@ class DataSet(object):
     self._images = self._images[perm]
     self._labels = self._labels[perm]
 
-def read_data_sets(train_dir = 'MNIST_data', one_hot=False):
+def read_data_sets(train_dir = 'fashion-MNIST_data', one_hot=False):
   TRAIN_IMAGES = 'train-images-idx3-ubyte.gz'
   TRAIN_LABELS = 'train-labels-idx1-ubyte.gz'
   TEST_IMAGES = 't10k-images-idx3-ubyte.gz'

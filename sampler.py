@@ -132,7 +132,7 @@ class Sampler():
       if sinusoid == True:
         factor = np.sin(percentage*np.pi/2)
       z = z1 + diff_z*factor
-      print "processing image ", i
+      print("processing image ", i)
       img_data_array.append(self.generate(z, x_dim, y_dim, scale))
     return img_data_array
   def save_anim_gif(self, img_data_array, filename, duration = 0.1):

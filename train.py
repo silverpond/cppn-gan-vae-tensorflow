@@ -4,7 +4,7 @@ import tensorflow as tf
 import argparse
 import time
 import os
-import cPickle
+import pickle
 
 from mnist_data import *
 from model import CPPNVAE
@@ -59,8 +59,8 @@ def train(args):
   if not os.path.exists(dirname):
     os.makedirs(dirname)
 
-  with open(os.path.join(dirname, 'config.pkl'), 'w') as f:
-    cPickle.dump(args, f)
+  with open(os.path.join(dirname, 'config.pkl'), 'wb') as f:
+    pickle.dump(args, f)
 
   mnist = read_data_sets()
   n_samples = mnist.num_examples
@@ -93,11 +93,11 @@ def train(args):
 
       # Display logs per epoch step
       if (counter+1) % display_step == 0:
-        print "Sample:", '%d' % ((i+1)*batch_size), " Epoch:", '%d' % (epoch), \
+        print("Sample:", '%d' % ((i+1)*batch_size), " Epoch:", '%d' % (epoch), \
               "d_loss=", "{:.4f}".format(d_loss), \
               "g_loss=", "{:.4f}".format(g_loss), \
               "vae_loss=", "{:.4f}".format(vae_loss), \
-              "n_op=", '%d' % (n_operations)
+              "n_op=", '%d' % (n_operations))
       counter += 1
       # Compute average loss
       avg_d_loss += d_loss / n_samples * batch_size
@@ -106,16 +106,16 @@ def train(args):
 
     # Display logs per epoch step
     if epoch >= 0:
-      print "Epoch:", '%04d' % (epoch), \
+      print("Epoch:", '%04d' % (epoch), \
             "avg_d_loss=", "{:.6f}".format(avg_d_loss), \
             "avg_q_loss=", "{:.6f}".format(avg_q_loss), \
-            "avg_vae_loss=", "{:.6f}".format(avg_vae_loss)
+            "avg_vae_loss=", "{:.6f}".format(avg_vae_loss))
 
     # save model
     if epoch >= 0 and epoch % checkpoint_step == 0:
       checkpoint_path = os.path.join('save', 'model.ckpt')
       cppnvae.save_model(checkpoint_path, epoch)
-      print "model saved to {}".format(checkpoint_path)
+      print("model saved to {}".format(checkpoint_path))
 
   # save model one last time, under zero label to denote finish.
   cppnvae.save_model(checkpoint_path, 0)
