@@ -32,6 +32,7 @@ from model import CPPNVAE
 import matplotlib.pyplot as plt
 import images2gif
 from images2gif import writeGif
+import tqdm
 
 mgc = get_ipython().magic
 mgc(u'matplotlib inline')
@@ -126,13 +127,12 @@ class Sampler():
     delta_z = 1.0 / (n_total_frame-1)
     diff_z = (z2-z1)
     img_data_array = []
-    for i in range(n_total_frame):
+    for i in tqdm.tqdm(range(n_total_frame)):
       percentage = delta_z*float(i)
       factor = percentage
       if sinusoid == True:
         factor = np.sin(percentage*np.pi/2)
       z = z1 + diff_z*factor
-      print("processing image ", i)
       img_data_array.append(self.generate(z, x_dim, y_dim, scale))
     return img_data_array
   def save_anim_gif(self, img_data_array, filename, duration = 0.1):
